@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: approuter-xs-configmap
+  namespace: python-xsuaa
+data:
+  xs-app.json: |-
+    {
+        "authenticationMethod": "route",
+        "sessionTimeout": 40,
+        "websockets": {
+          "enabled": true
+        },  
+        "login" : {
+          "callbackEndpoint": "/sap/com/pythontest-service"
+        },
+        "routes": [
+            {
+                "source": "^/sap/com/pythontest-service/(.*)$",
+                "destination": "pythontest-app",
+                "target": "$1",
+                "authenticationType": "xsuaa",
+                "csrfProtection": false
+            },
+            {
+                "source": "^/(.*)$",
+                "destination": "pythontest-app",
+                "target": "hello",
+                "authenticationType": "xsuaa",
+                "csrfProtection": false
+            }
+        ]
+    }
+  xs-security.json: |-
+    { 
+      "xsappname": "apascalingtest-app",
+      "tenant-mode": "dedicated",
+      "scopes": [
+          {
+              "name": "$XSAPPNAME.Restricted",
+              "description": "Restricted Access"
+          }, 
+          {
+              "name": "$XSAPPNAME.Full",
+              "description": "Full Access" 
+          }
+      ], 
+      "attributes": [
+          { 
+              "name": "Models",
+              "description": "Generative AI Models",
+              "valueType": "string" 
+          },
+          {
+              "name": "Features",
+              "description": "Features of Application",
+              "valueType": "string" 
+          }
+      ],
+      "role-templates": [
+          { 
+              "name"                : "General", 
+              "description"         : "General User", 
+              "scope-references"    : [
+                  "$XSAPPNAME.Restricted"
+              ], 
+              "attribute-references": ["Models", "Features"]  
+          },
+          { 
+              "name"                : "Internal", 
+              "description"         : "Internal User", 
+              "scope-references"    : [
+                  "$XSAPPNAME.Full"
+              ], 
+              "attribute-references": ["Models", "Features"]  
+          }
+      ]
+    }

@@ -1,0 +1,8 @@
+deployment.yaml
+deployment_app.yaml
+service.yaml
+serviceinstance.yaml
+servicebinding.yaml
+configmap1.yaml
+configmap2.yaml
+apirule.yaml

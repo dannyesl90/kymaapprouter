@@ -1,0 +1,8 @@
+apiVersion: services.cloud.sap.com/v1
+kind: ServiceBinding
+metadata:
+  name: python-xsuaa-service-binding
+  namespace: python-xsuaa
+spec:
+  secretName: python-xsuaa-service-binding-secret
+  serviceInstanceName: python-xsuaa-service-instance

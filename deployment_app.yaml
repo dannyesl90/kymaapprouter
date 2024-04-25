@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pythontest-app
+  namespace: python-xsuaa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pythontest-app
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: pythontest-app
+        version: v1
+    spec:
+      containers:
+      - image: danny90/flaskapp:latest
+        imagePullPolicy: Always
+        name: pythontest-container
+        ports:
+        - containerPort: 5000
+        resources:
+          limits:
+            cpu: 100m
+            memory: 256Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi

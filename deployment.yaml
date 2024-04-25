@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pythontest-approuter-app
+  namespace: python-xsuaa
+  labels:
+    app: pythontest-approuter-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pythontest-approuter-app
+  template:
+    metadata:
+      labels:
+        app: pythontest-approuter-app
+        sidecar.istio.io/inject: 'false'
+    spec:
+      volumes:
+        - name: xs-app
+          configMap:
+            name: approuter-xs-configmap
+        - name: python-xsuaa-service-binding
+          secret:
+            secretName: python-xsuaa-service-binding-secret
+      containers:
+        - name: pythontest-approuter-container
+          image: sapse/approuter:16.0.1
+          ports:
+            - containerPort: 5000
+          resources:
+            requests:
+              memory: 256Mi
+              cpu: 100m
+            limits:
+              memory: 256Mi
+              cpu: 100m
+          volumeMounts:
+            - name: xs-app
+              mountPath: /app/xs-app.json
+              subPath: xs-app.json
+              readOnly: true
+            - name: python-xsuaa-service-binding
+              mountPath: /etc/secrets/sapcp/xsuaa/python-xsuaa-service-instance
+              readOnly: true
+          env:
+          - name: SESSION_TIMEOUT
+            value: "40"
+          - name: XS_APP_LOG_LEVEL
+            value: "debug"
+          - name: destinations
+            valueFrom:
+              configMapKeyRef:
+                name: destinations-configmap
+                key: destinations

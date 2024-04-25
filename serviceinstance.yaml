@@ -1,0 +1,30 @@
+apiVersion: services.cloud.sap.com/v1
+kind: ServiceInstance
+metadata:
+  name: python-xsuaa-service-instance
+  namespace: python-xsuaa
+spec:
+  externalName: python-xsuaa-service-instance
+  parameters:
+    description: Security profile of called application
+    oauth2-configuration:
+      redirect-uris:
+        - https://*/**
+    role-templates:
+      - description: General User
+        name: General
+        scope-references:
+          - $XSAPPNAME.Restricted
+      - description: Internal User
+        name: Internal
+        scope-references:
+          - $XSAPPNAME.Full
+    scopes:
+      - description: Restricted Access
+        name: $XSAPPNAME.Restricted
+      - description: Full
+        name: $XSAPPNAME.Full
+    tenant-mode: dedicated
+    xsappname: python-flask-app
+  serviceOfferingName: xsuaa
+  servicePlanName: application

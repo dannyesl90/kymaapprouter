@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: pythontest-service
+  namespace: python-xsuaa
+  labels:
+    app: pythontest-app
+    service: pythontest-service
+spec:
+  ports:
+  - name: http
+    port: 8020
+    targetPort: 5000
+  selector:
+    app: pythontest-app
